@@ -11,6 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from my_dataset import MyDataSet
 from nets.TICNN import *
+from nets.TICNN_2048 import *
 import time
 from utils import read_split_data
 
@@ -31,13 +32,13 @@ learing_rate=1e-3 #学习速率
 #准备数据集
 #加载自制数据集
 
-root_source = ".\dataset/A"  # 数据集所在根目录-【资源域】
-root_target = ".\dataset/B_SNR4"  # 数据集所在根目录-【目标域】
+root_source = ".\dataset/1024/A"  # 数据集所在根目录-【资源域】
+root_target = ".\dataset/1024/D_SNR4"  # 数据集所在根目录-【目标域】
 
 
 
 #读取资源域数据
-train_images_path, train_images_label, val_images_path, val_images_label = read_split_data(root_source,0.002)
+train_images_path, train_images_label, val_images_path, val_images_label = read_split_data(root_source,0.005)
 #读取目标域数据
 target_train_images_path, target_train_images_label, target_val_images_path, target_val_images_label = read_split_data(root_target,0.998)
 
@@ -86,6 +87,7 @@ tgt_test_dataloader = torch.utils.data.DataLoader(tgt_test_data_set,
                                                   collate_fn=tgt_test_data_set.collate_fn)
 
 wang=TICNN().to(device)  # 将模型加载到cuda上训练
+# wang=TICNN_2048().to(device)  # 将模型加载到cuda上训练
 
 #定义损失函数
 loss_fn=nn.CrossEntropyLoss().to(device) #将损失函数加载到cuda上训练
@@ -182,6 +184,7 @@ for i in range(epoch):
     time_str=time.strftime('%Y-%m-%d_%H-%M-%S',time.localtime(time.time()))
     save_path = './models/'
     filepath = os.path.join(save_path, "wang_{}_{}.pth".format(time_str,i+1))
+    model_name = np.append(model_name, filepath)
     if (i+1) % save_epoch == 0:
         torch.save(wang,filepath) #保存训练好的模型
 
