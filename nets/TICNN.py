@@ -46,6 +46,7 @@ class TICNN(nn.Module):
 
         # 将数据展平
         self.flatten = nn.Flatten()
+        self.dropout2 = nn.Dropout(p=0.5)  # dropout训练
         self.fc1 = nn.Linear(in_features=64*2, out_features=100, bias=True)
 
         # 100-----13
@@ -66,6 +67,7 @@ class TICNN(nn.Module):
         x = F.relu(self.bn6(self.conv3(x)))
         x = self.pool6(x)
         x = self.flatten(x)
+        # x = self.dropout2(x)
         x = self.fc1(x)
         x = self.fc2(x)
         return x
